@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECE23607A — Communication Simulink Toolbox Lab Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f14;
+    --surface: #131920;
+    --surface2: #1a2233;
+    --surface3: #1f2d42;
+    --amber: #e8a951;
+    --amber-dim: #9f6f2a;
+    --amber-glow: rgba(232,169,81,0.12);
+    --cyan: #4ec9e0;
+    --cyan-dim: #2a7a8a;
+    --green: #57d98e;
+    --red: #e05c5c;
+    --text: #d4cfc8;
+    --text-muted: #7a8098;
+    --text-dim: #4a5168;
+    --border: rgba(232,169,81,0.18);
+    --border-faint: rgba(255,255,255,0.06);
+    --code-bg: #0d1520;
+    --radius: 6px;
+    --sidebar-w: 260px;
+    --mono: 'Share Tech Mono', monospace;
+    --serif: 'Crimson Pro', Georgia, serif;
+    --sans: 'Space Grotesk', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.75;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ─────────────────────────────────── */
+  #sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 100;
+    scrollbar-width: thin;
+    scrollbar-color: var(--amber-dim) transparent;
+  }
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--amber-dim); border-radius: 2px; }
+
+  .sidebar-logo {
+    padding: 22px 20px 16px;
+    border-bottom: 1px solid var(--border-faint);
+  }
+  .sidebar-logo .dept-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--amber);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .sidebar-logo .course-code {
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--amber);
+    font-weight: normal;
+    display: block;
+    line-height: 1.2;
+  }
+  .sidebar-logo .course-title {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-top: 4px;
+    font-family: var(--sans);
+  }
+
+  .sidebar-section {
+    padding: 10px 0 4px 20px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+  }
+
+  .sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 20px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 400;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    line-height: 1.3;
+  }
+  .sidebar-nav a:hover {
+    color: var(--amber);
+    background: var(--amber-glow);
+    border-left-color: var(--amber-dim);
+  }
+  .sidebar-nav a .exp-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--amber-dim);
+    min-width: 18px;
+    flex-shrink: 0;
+  }
+
+  /* ── MAIN CONTENT ────────────────────────────── */
+  #main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    max-width: 900px;
+    padding: 0 48px 80px;
+  }
+
+  /* ── HEADER ──────────────────────────────────── */
+  .page-header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 40px 48px 36px;
+    margin: 0 -48px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--amber), var(--cyan), var(--amber));
+  }
+  .page-header::after {
+    content: 'ECE23607A';
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--mono);
+    font-size: 56px;
+    color: rgba(232,169,81,0.06);
+    pointer-events: none;
+    letter-spacing: -2px;
+  }
+  .header-inst {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .header-title {
+    font-family: var(--sans);
+    font-size: 26px;
+    font-weight: 700;
+    color: #f0e8d8;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .header-subtitle {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--amber);
+    margin-bottom: 20px;
+  }
+  .header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .header-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .header-meta .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--amber-dim);
+  }
+
+  /* ── STUDENT INFO CARD ──────────────────────── */
+  .student-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 36px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 32px;
+  }
+  .student-field {
+    border-bottom: 1px solid var(--surface3);
+    padding-bottom: 6px;
+  }
+  .student-field label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .student-field .blank {
+    font-family: var(--sans);
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+
+  /* ── SECTION HEADINGS ────────────────────────── */
+  .section {
+    margin-bottom: 56px;
+  }
+  h1.section-title {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 700;
+    color: #f0e8d8;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  h1.section-title::before {
+    content: '';
+    width: 4px; height: 22px;
+    background: var(--amber);
+    display: block;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  h2 {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--amber);
+    margin: 28px 0 12px;
+    letter-spacing: 0.03em;
+  }
+  h3 {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--cyan);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 22px 0 10px;
+  }
+
+  p { margin-bottom: 12px; }
+
+  /* ── EXPERIMENT CARDS ────────────────────────── */
+  .exp-card {
+    background: var(--surface);
+    border: 1px solid var(--border-faint);
+    border-radius: var(--radius);
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+  .exp-card-header {
+    background: var(--surface2);
+    padding: 18px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    border-bottom: 1px solid var(--border-faint);
+  }
+  .exp-num-badge {
+    background: var(--amber-glow);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    width: 40px; height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 16px;
+    color: var(--amber);
+    flex-shrink: 0;
+  }
+  .exp-card-header .exp-meta { flex: 1; }
+  .exp-card-header .exp-meta h2 {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: #f0e8d8;
+    margin: 0 0 4px;
+    line-height: 1.3;
+  }
+  .exp-card-header .exp-aim {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: var(--serif);
+    font-style: italic;
+  }
+  .exp-card-body {
+    padding: 24px;
+  }
+
+  /* ── SUBSECTION BLOCKS ───────────────────────── */
+  .theory-block, .procedure-block {
+    margin-bottom: 20px;
+  }
+  .block-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+  .block-label.theory { color: var(--cyan); background: rgba(78,201,224,0.08); border: 1px solid rgba(78,201,224,0.2); }
+  .block-label.procedure { color: var(--green); background: rgba(87,217,142,0.08); border: 1px solid rgba(87,217,142,0.2); }
+  .block-label.output { color: var(--amber); background: var(--amber-glow); border: 1px solid var(--border); }
+  .block-label.model { color: #b494f7; background: rgba(180,148,247,0.08); border: 1px solid rgba(180,148,247,0.2); }
+
+  /* ── CODE BLOCKS ─────────────────────────────── */
+  pre, code {
+    font-family: var(--mono);
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--surface3);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #a8c7e8;
+    margin: 12px 0 18px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface3) transparent;
+  }
+  pre .kw { color: #e8a951; }
+  pre .cm { color: var(--text-muted); font-style: italic; }
+  pre .str { color: #9ecf7e; }
+  pre .fn { color: var(--cyan); }
+
+  code {
+    background: var(--surface3);
+    color: var(--cyan);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+
+  /* ── TABLES ──────────────────────────────────── */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 14px 0 22px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-faint);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    font-family: var(--sans);
+  }
+  thead tr {
+    background: var(--surface2);
+  }
+  thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--amber);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border-faint);
+    transition: background 0.12s;
+  }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  tbody tr:last-child { border-bottom: none; }
+  td {
+    padding: 9px 14px;
+    color: var(--text);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  td strong { color: #f0e8d8; }
+
+  /* ── INFO CARDS (WK, PO, etc.) ───────────────── */
+  .item-grid {
+    display: grid;
+    gap: 12px;
+  }
+  .item-card {
+    background: var(--surface2);
+    border: 1px solid var(--border-faint);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .item-card .item-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--amber);
+    background: var(--amber-glow);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 8px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    min-width: 46px;
+    text-align: center;
+  }
+  .item-card .item-text {
+    font-size: 14.5px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── VIVA Q&A ────────────────────────────────── */
+  .viva-section { margin-bottom: 36px; }
+  .viva-exp-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 14px;
+    padding: 8px 14px;
+    background: rgba(78,201,224,0.06);
+    border: 1px solid rgba(78,201,224,0.15);
+    border-radius: 4px;
+  }
+  .qa-item {
+    margin-bottom: 10px;
+    border: 1px solid var(--border-faint);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .qa-q {
+    background: var(--surface2);
+    padding: 11px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    user-select: none;
+    transition: background 0.12s;
+  }
+  .qa-q:hover { background: var(--surface3); }
+  .qa-q .q-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--amber-dim);
+    flex-shrink: 0;
+    margin-top: 2px;
+    min-width: 22px;
+  }
+  .qa-q .q-text {
+    font-family: var(--sans);
+    font-size: 13.5px;
+    color: var(--text);
+    flex: 1;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+  .qa-q .q-arrow {
+    color: var(--text-dim);
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 3px;
+    transition: transform 0.2s;
+  }
+  .qa-item.open .qa-q .q-arrow { transform: rotate(90deg); }
+  .qa-a {
+    display: none;
+    padding: 14px 16px 14px 50px;
+    background: var(--code-bg);
+    border-top: 1px solid var(--border-faint);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .qa-item.open .qa-a { display: block; }
+
+  /* ── CERTIFICATE ─────────────────────────────── */
+  .certificate-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .certificate-box::before {
+    content: '✦ CERTIFICATE ✦';
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--amber-dim);
+    position: absolute;
+    top: -1px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface2);
+    padding: 0 12px;
+  }
+  .cert-text { font-size: 15px; line-height: 1.8; margin-bottom: 20px; }
+  .cert-text strong { color: #f0e8d8; }
+  .cert-sigs {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-faint);
+  }
+  .cert-sig-item {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+  }
+  .cert-sig-item .sig-line {
+    width: 120px;
+    height: 1px;
+    background: var(--surface3);
+    margin: 16px auto 8px;
+  }
+
+  /* ── MARKS TABLE ─────────────────────────────── */
+  .marks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .mark-item {
+    background: var(--surface3);
+    border-radius: 4px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+  .mark-item .mark-label { color: var(--text-muted); }
+  .mark-item .mark-val {
+    font-family: var(--mono);
+    color: var(--amber);
+    font-size: 15px;
+  }
+
+  /* ── TOC ─────────────────────────────────────── */
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .toc-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 7px 12px;
+    border-radius: 4px;
+    transition: background 0.12s;
+    font-size: 14px;
+  }
+  .toc-list li:hover { background: var(--amber-glow); }
+  .toc-list li .toc-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--amber-dim);
+    flex-shrink: 0;
+    width: 24px;
+  }
+  .toc-list li a {
+    color: var(--text);
+    text-decoration: none;
+    flex: 1;
+  }
+  .toc-list li a:hover { color: var(--amber); }
+  .toc-list li .toc-dots {
+    flex: 1;
+    border-bottom: 1px dashed var(--text-dim);
+    margin: 0 6px;
+    opacity: 0.4;
+  }
+  .toc-list li .toc-page {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .toc-header-row {
+    background: var(--surface2);
+    border-radius: 4px;
+    padding: 7px 12px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 13px;
+    font-family: var(--sans);
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 2px;
+  }
+
+  /* ── PROCEDURE STEPS ─────────────────────────── */
+  .steps-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 10px 0 16px;
+  }
+  .steps-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 14.5px;
+    line-height: 1.65;
+  }
+  .steps-list li .step-n {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    background: rgba(87,217,142,0.08);
+    border: 1px solid rgba(87,217,142,0.2);
+    border-radius: 3px;
+    padding: 2px 7px;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  /* ── NOTE/BLOCKQUOTE ─────────────────────────── */
+  blockquote {
+    border-left: 3px solid var(--amber-dim);
+    background: var(--amber-glow);
+    padding: 10px 16px;
+    margin: 12px 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  blockquote strong { color: var(--amber); font-style: normal; }
+
+  .note-box {
+    background: rgba(78,201,224,0.06);
+    border: 1px solid rgba(78,201,224,0.2);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin: 12px 0;
+  }
+  .note-box strong { color: var(--cyan); }
+
+  /* ── INTRO SECTION ───────────────────────────── */
+  .intro-card {
+    background: var(--surface2);
+    border: 1px solid var(--border-faint);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  /* ── VISION MISSION ──────────────────────────── */
+  .vm-card {
+    background: var(--surface2);
+    border: 1px solid var(--border-faint);
+    border-left: 3px solid var(--amber-dim);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  .vm-card h3 {
+    margin: 0 0 8px;
+    font-size: 12px;
+  }
+  .vm-card p, .vm-card li { font-size: 14.5px; margin-bottom: 6px; }
+  .vm-card ul { list-style: none; padding: 0; }
+  .vm-card ul li::before {
+    content: '›';
+    color: var(--amber-dim);
+    margin-right: 8px;
+  }
+
+  /* ── SYLLABUS TABLE ──────────────────────────── */
+  .syllabus-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .syl-item {
+    background: var(--surface2);
+    border: 1px solid var(--border-faint);
+    border-radius: 4px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .syl-item .syl-key {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .syl-item .syl-val {
+    font-family: var(--mono);
+    font-size: 16px;
+    color: var(--amber);
+  }
+
+  /* ── CLO LIST ─────────────────────────────────── */
+  .clo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0;
+  }
+  .clo-tag {
+    background: var(--surface3);
+    border: 1px solid var(--border-faint);
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-family: var(--sans);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    flex: 1;
+    min-width: 200px;
+  }
+  .clo-tag .clo-id {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--cyan);
+    flex-shrink: 0;
+  }
+
+  /* ── FIGURE DIAGRAMS ─────────────────────────── */
+  .fig-box {
+    background: var(--code-bg);
+    border: 1px solid var(--surface3);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 12px 0 18px;
+    overflow-x: auto;
+  }
+  .fig-box pre {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    color: #7ebfcf;
+  }
+  .fig-caption {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+    text-align: center;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--surface3);
+  }
+
+  /* ── GUIDELINES LIST ─────────────────────────── */
+  .guide-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .guide-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 14.5px;
+    line-height: 1.6;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border-radius: 4px;
+  }
+  .guide-list li::before {
+    content: '▸';
+    color: var(--amber-dim);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── SEPARATOR ───────────────────────────────── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border-faint);
+    margin: 36px 0;
+  }
+
+  /* ── RESULT BOX ──────────────────────────────── */
+  .result-box {
+    background: var(--surface3);
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .result-box::before {
+    content: 'RESULT';
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--green);
+    background: rgba(87,217,142,0.08);
+    border: 1px solid rgba(87,217,142,0.2);
+    border-radius: 3px;
+    padding: 2px 8px;
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTER ──────────────────────────────────── */
+  footer {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    padding-top: 40px;
+    border-top: 1px solid var(--border-faint);
+    margin-top: 60px;
+    line-height: 2;
+  }
+
+  /* ── SCROLLBAR FOR MAIN ──────────────────────── */
+  html::-webkit-scrollbar { width: 6px; }
+  html::-webkit-scrollbar-track { background: var(--bg); }
+  html::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+  /* ── RESPONSIVE ──────────────────────────────── */
+  @media (max-width: 800px) {
+    #sidebar { display: none; }
+    #main { margin-left: 0; padding: 0 20px 60px; }
+    .page-header { padding: 28px 20px; margin: 0 -20px 32px; }
+    .syllabus-meta { grid-template-columns: 1fr 1fr; }
+    .student-card { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══════════════════════════════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <span class="dept-label">ECE Lab Manual</span>
+    <span class="course-code">ECE23607A</span>
+    <div class="course-title">Communication Simulink Toolbox Laboratory</div>
+  </div>
+
+  <div class="sidebar-section">Frontmatter</div>
+  <div class="sidebar-nav">
+    <a href="#certificate"><span class="exp-num">◈</span> Certificate</a>
+    <a href="#toc"><span class="exp-num">◈</span> Table of Contents</a>
+    <a href="#wk"><span class="exp-num">◈</span> Knowledge Profile</a>
+    <a href="#pos"><span class="exp-num">◈</span> Program Outcomes</a>
+    <a href="#peo"><span class="exp-num">◈</span> PEOs &amp; PSOs</a>
+    <a href="#syllabus"><span class="exp-num">◈</span> Syllabus</a>
+    <a href="#experiments-list"><span class="exp-num">◈</span> Experiment List</a>
+    <a href="#scheme"><span class="exp-num">◈</span> Examination Scheme</a>
+    <a href="#rubrics"><span class="exp-num">◈</span> Rubrics</a>
+    <a href="#guidelines"><span class="exp-num">◈</span> Lab Guidelines</a>
+    <a href="#intro-matlab"><span class="exp-num">◈</span> Intro to Simulink</a>
+  </div>
+
+  <div class="sidebar-section">Experiments</div>
+  <div class="sidebar-nav">
+    <a href="#exp1"><span class="exp-num">01</span> Signal Generation</a>
+    <a href="#exp2"><span class="exp-num">02</span> DPSK Tx &amp; Rx</a>
+    <a href="#exp3"><span class="exp-num">03</span> Multiband Signal</a>
+    <a href="#exp4"><span class="exp-num">04</span> Noise &amp; Histograms</a>
+    <a href="#exp5"><span class="exp-num">05</span> OFDM Basics</a>
+    <a href="#exp6"><span class="exp-num">06</span> QPSK Tx &amp; Rx</a>
+    <a href="#exp7"><span class="exp-num">07</span> LPF &amp; HPF</a>
+    <a href="#exp8"><span class="exp-num">08</span> BPF &amp; BRF</a>
+    <a href="#exp9"><span class="exp-num">09</span> Eye Diagrams</a>
+    <a href="#exp10"><span class="exp-num">10</span> OFDM Mod/Demod</a>
+  </div>
+
+  <div class="sidebar-section">Reference</div>
+  <div class="sidebar-nav">
+    <a href="#viva"><span class="exp-num">◈</span> Viva Questions</a>
+    <a href="#vision"><span class="exp-num">◈</span> Vision &amp; Mission</a>
+  </div>
+</nav>
+
+<!-- ══ MAIN ══════════════════════════════════════════════════════════════ -->
+<main id="main">
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="header-inst">Global Academy of Technology · Dept. of ECE · VTU Affiliated</div>
+    <div class="header-title">Communication Simulink Toolbox<br>Laboratory Manual</div>
+    <div class="header-subtitle">ECE23607A</div>
+    <div class="header-meta">
+      <span><span class="dot"></span> Academic Year 2025–26</span>
+      <span><span class="dot"></span> Credits: 1 | L:T:P = 0:0:2</span>
+      <span><span class="dot"></span> CIE: 50 | SEE: 50</span>
+      <span><span class="dot"></span> VTU, Belagavi</span>
+    </div>
+  </header>
+
+  <!-- STUDENT INFO -->
+  <div class="section">
+    <div class="student-card">
+      <div class="student-field">
+        <label>Name</label>
+        <div class="blank">________________________________</div>
+      </div>
+      <div class="student-field">
+        <label>USN</label>
+        <div class="blank">________________________</div>
+      </div>
+      <div class="student-field">
+        <label>Semester</label>
+        <div class="blank">___________</div>
+      </div>
+      <div class="student-field">
+        <label>Section</label>
+        <div class="blank">___________</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CERTIFICATE -->
+  <div class="section" id="certificate">
+    <h1 class="section-title">Certificate</h1>
+    <div class="certificate-box">
+      <p class="cert-text">
+        This is to certify that Mr./Ms. <strong>________________________________</strong>
+        bearing USN <strong>______________</strong> of the department of Electronics and
+        Communication Engineering has satisfactorily completed the course of experiments in
+        <strong>Communication Simulink Toolbox Laboratory</strong> prescribed by the
+        Visvesvaraya Technological University, Belagavi, in the academic year
+        <strong>2025–26</strong>.
+      </p>
+      <h3>Marks Allotted</h3>
+      <div class="marks-grid">
+        <div class="mark-item"><span class="mark-label">Record</span><span class="mark-val">__ / 20</span></div>
+        <div class="mark-item"><span class="mark-label">CIE</span><span class="mark-val">__ / 30</span></div>
+        <div class="mark-item" style="grid-column:span 2; background:var(--amber-glow); border:1px solid var(--border);">
+          <span class="mark-label" style="color:var(--amber);">Total</span>
+          <span class="mark-val">__ / 50</span>
+        </div>
+      </div>
+      <div class="cert-sigs">
+        <div class="cert-sig-item">
+          <div class="sig-line"></div>
+          Signature of Staff
+        </div>
+        <div class="cert-sig-item" style="text-align:right;">
+          <div class="sig-line" style="margin-right:0;"></div>
+          Head of the Department
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="section" id="toc">
+    <h1 class="section-title">Table of Contents</h1>
+    <ul class="toc-list">
+      <li class="toc-header-row"><span style="width:24px"></span>Knowledge and Attitude Profile (WK)<span class="toc-dots"></span><span class="toc-page">i</span></li>
+      <li class="toc-header-row"><span style="width:24px"></span>Program Outcomes<span class="toc-dots"></span><span class="toc-page">ii</span></li>
+      <li class="toc-header-row"><span style="width:24px"></span>PEOs &amp; PSOs<span class="toc-dots"></span><span class="toc-page">iii</span></li>
+      <li class="toc-header-row"><span style="width:24px"></span>Syllabus<span class="toc-dots"></span><span class="toc-page">iv</span></li>
+      <li class="toc-header-row"><span style="width:24px"></span>List of Experiments<span class="toc-dots"></span><span class="toc-page">v</span></li>
+      <li class="toc-header-row"><span style="width:24px"></span>Scheme of Examination<span class="toc-dots"></span><span class="toc-page">vi</span></li>
+      <li class="toc-header-row"><span style="width:24px"></span>Evaluation Rubrics<span class="toc-dots"></span><span class="toc-page">viii</span></li>
+      <li class="toc-header-row"><span style="width:24px"></span>Lab Guidelines<span class="toc-dots"></span><span class="toc-page">x</span></li>
+      <li class="toc-header-row"><span style="width:24px"></span>Introduction to MATLAB Simulink<span class="toc-dots"></span><span class="toc-page">1–8</span></li>
+      <li><span class="toc-num">01</span><a href="#exp1">Generation of Sine, Square, Triangular &amp; Ramp Signals</a><span class="toc-dots"></span><span class="toc-page">9</span></li>
+      <li><span class="toc-num">02</span><a href="#exp2">DPSK Transmitter and Receiver in Simulink</a><span class="toc-dots"></span><span class="toc-page">12</span></li>
+      <li><span class="toc-num">03</span><a href="#exp3">Multiband Signal using Communications Toolbox</a><span class="toc-dots"></span><span class="toc-page">15</span></li>
+      <li><span class="toc-num">04</span><a href="#exp4">Random Noise Generation &amp; Histogram Plots</a><span class="toc-dots"></span><span class="toc-page">17</span></li>
+      <li><span class="toc-num">05</span><a href="#exp5">Equalization, Convolution &amp; Cyclic Prefix on OFDM</a><span class="toc-dots"></span><span class="toc-page">20</span></li>
+      <li><span class="toc-num">06</span><a href="#exp6">QPSK Transmitter and Receiver in Simulink</a><span class="toc-dots"></span><span class="toc-page">24</span></li>
+      <li><span class="toc-num">07</span><a href="#exp7">Low Pass and High Pass Filter</a><span class="toc-dots"></span><span class="toc-page">28</span></li>
+      <li><span class="toc-num">08</span><a href="#exp8">Band Pass and Band Reject Filter</a><span class="toc-dots"></span><span class="toc-page">30</span></li>
+      <li><span class="toc-num">09</span><a href="#exp9">Scatter Plots &amp; Eye Diagrams of QPSK with AWGN</a><span class="toc-dots"></span><span class="toc-page">32</span></li>
+      <li><span class="toc-num">10</span><a href="#exp10">OFDM Modulation and Demodulation</a><span class="toc-dots"></span><span class="toc-page">35</span></li>
+    </ul>
+  </div>
+
+  <!-- KNOWLEDGE PROFILE -->
+  <div class="section" id="wk">
+    <h1 class="section-title">Knowledge and Attitude Profile (WK)</h1>
+    <div class="item-grid">
+      <div class="item-card"><span class="item-badge">WK1</span><span class="item-text">A systematic, theory-based understanding of natural sciences applicable to the discipline, and awareness of relevant social sciences.</span></div>
+      <div class="item-card"><span class="item-badge">WK2</span><span class="item-text">Conceptually-based mathematics, numerical analysis, data analysis, statistics and formal aspects of computer and information science to support modelling applicable to the discipline.</span></div>
+      <div class="item-card"><span class="item-badge">WK3</span><span class="item-text">A systematic, theory-based formulation of engineering fundamentals required in the engineering discipline.</span></div>
+      <div class="item-card"><span class="item-badge">WK4</span><span class="item-text">Engineering specialist knowledge that provides theoretical frameworks and bodies of knowledge for accepted practice areas; much is at the forefront of the discipline.</span></div>
+      <div class="item-card"><span class="item-badge">WK5</span><span class="item-text">Knowledge including resource use, environmental impacts, whole-life cost, re-use, net zero carbon and similar concepts supporting engineering design and operations.</span></div>
+      <div class="item-card"><span class="item-badge">WK6</span><span class="item-text">Knowledge of engineering practice (technology) in the practice areas of the discipline.</span></div>
+      <div class="item-card"><span class="item-badge">WK7</span><span class="item-text">Knowledge of the role of engineering in society; professional responsibility to public safety and sustainable development.</span></div>
+      <div class="item-card"><span class="item-badge">WK8</span><span class="item-text">Engagement with current research literature of the discipline; awareness of critical thinking and creative approaches to evaluate emerging issues.</span></div>
+      <div class="item-card"><span class="item-badge">WK9</span><span class="item-text">Ethics, inclusive behaviour and conduct. Professional ethics, responsibilities and norms. Awareness of diversity by reason of ethnicity, gender, age, physical ability, etc.</span></div>
+    </div>
+  </div>
+
+  <!-- PROGRAM OUTCOMES -->
+  <div class="section" id="pos">
+    <h1 class="section-title">Program Outcomes (POs)</h1>
+    <div class="item-grid">
+      <div class="item-card"><span class="item-badge">PO1</span><span class="item-text"><strong style="color:#f0e8d8">Engineering Knowledge</strong> — Apply knowledge of mathematics, natural science, computing, and engineering fundamentals to develop solutions of complex engineering problems.</span></div>
+      <div class="item-card"><span class="item-badge">PO2</span><span class="item-text"><strong style="color:#f0e8d8">Problem Analysis</strong> — Identify, formulate, review research literature and analyse complex engineering problems reaching substantiated conclusions with consideration for sustainable development.</span></div>
+      <div class="item-card"><span class="item-badge">PO3</span><span class="item-text"><strong style="color:#f0e8d8">Design / Development</strong> — Design creative solutions for complex engineering problems; meet identified needs with consideration for public health, safety, whole-life cost, and environment.</span></div>
+      <div class="item-card"><span class="item-badge">PO4</span><span class="item-text"><strong style="color:#f0e8d8">Investigations</strong> — Conduct investigations of complex problems using research-based knowledge including design of experiments, modelling, analysis and interpretation of data.</span></div>
+      <div class="item-card"><span class="item-badge">PO5</span><span class="item-text"><strong style="color:#f0e8d8">Tool Usage</strong> — Create, select and apply appropriate techniques, resources and modern engineering &amp; IT tools to solve complex engineering problems.</span></div>
+      <div class="item-card"><span class="item-badge">PO6</span><span class="item-text"><strong style="color:#f0e8d8">Engineer &amp; World</strong> — Analyse societal and environmental aspects for their impact on sustainability with reference to economy, health, safety, legal framework, and culture.</span></div>
+      <div class="item-card"><span class="item-badge">PO7</span><span class="item-text"><strong style="color:#f0e8d8">Ethics</strong> — Apply ethical principles; commit to professional ethics, human values, diversity and inclusion; adhere to national &amp; international laws.</span></div>
+      <div class="item-card"><span class="item-badge">PO8</span><span class="item-text"><strong style="color:#f0e8d8">Teamwork</strong> — Function effectively as an individual and as a member or leader in diverse and multi-disciplinary teams.</span></div>
+      <div class="item-card"><span class="item-badge">PO9</span><span class="item-text"><strong style="color:#f0e8d8">Communication</strong> — Communicate effectively; write reports and design documentation; make effective presentations considering cultural and language differences.</span></div>
+      <div class="item-card"><span class="item-badge">PO10</span><span class="item-text"><strong style="color:#f0e8d8">Project Management</strong> — Apply engineering management principles and economic decision-making to manage projects in multidisciplinary environments.</span></div>
+      <div class="item-card"><span class="item-badge">PO11</span><span class="item-text"><strong style="color:#f0e8d8">Life-Long Learning</strong> — Recognise the need for, and demonstrate ability for independent and life-long learning, adaptability to new technologies, and critical thinking.</span></div>
+    </div>
+  </div>
+
+  <!-- PEOs & PSOs -->
+  <div class="section" id="peo">
+    <h1 class="section-title">Program Educational &amp; Specific Outcomes</h1>
+    <h2>Program Educational Objectives (PEOs)</h2>
+    <div class="item-grid">
+      <div class="item-card"><span class="item-badge">PEO1</span><span class="item-text">Acquire technical knowledge of fundamentals of basic sciences, ECE and applied mathematics for the rapid changes in technology.</span></div>
+      <div class="item-card"><span class="item-badge">PEO2</span><span class="item-text">Analyze, design, apply, evaluate and solve complex problems in technology and management through engineering skills.</span></div>
+      <div class="item-card"><span class="item-badge">PEO3</span><span class="item-text">Demonstrate team spirit by applying ethics and professional behaviour.</span></div>
+      <div class="item-card"><span class="item-badge">PEO4</span><span class="item-text">Involve in research and development in ECE and multi-disciplinary areas for lifelong learning.</span></div>
+    </div>
+    <h2 style="margin-top:28px">Program Specific Outcomes (PSOs)</h2>
+    <div class="item-grid">
+      <div class="item-card"><span class="item-badge">PSO1</span><span class="item-text">Analyze, design and implement emerging electronics and communication systems using devices, subsystems and networking.</span></div>
+      <div class="item-card"><span class="item-badge">PSO2</span><span class="item-text">Exhibit technical skills necessary to choose careers in the design, implement, testing, management and operation of Electronics and Communication circuits and systems.</span></div>
+    </div>
+  </div>
+
+  <!-- SYLLABUS -->
+  <div class="section" id="syllabus">
+    <h1 class="section-title">Syllabus</h1>
+    <div class="syllabus-meta">
+      <div class="syl-item"><span class="syl-key">Subject Code</span><span class="syl-val">ECE23607A</span></div>
+      <div class="syl-item"><span class="syl-key">CIE Marks</span><span class="syl-val">50</span></div>
+      <div class="syl-item"><span class="syl-key">SEE Marks</span><span class="syl-val">50</span></div>
+      <div class="syl-item"><span class="syl-key">Hours/Week (L:T:P)</span><span class="syl-val">0:0:2</span></div>
+      <div class="syl-item"><span class="syl-key">Credits</span><span class="syl-val">1</span></div>
+      <div class="syl-item"><span class="syl-key">Exam Hours</span><span class="syl-val">03</span></div>
+    </div>
+    <h3>Course Learning Objectives</h3>
+    <div class="clo-list">
+      <div class="clo-tag"><span class="clo-id">CLO1</span> Simulate discrete time signals</div>
+      <div class="clo-tag"><span class="clo-id">CLO2</span> DPSK and QPSK Transmitter and Receiver</div>
+      <div class="clo-tag"><span class="clo-id">CLO3</span> Random noise generation and histogram plotting</div>
+      <div class="clo-tag"><span class="clo-id">CLO4</span> OFDM modulation and demodulation</div>
+      <div class="clo-tag"><span class="clo-id">CLO5</span> Filtering operations</div>
+    </div>
+    <h3>Course Outcomes</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>CO</th><th>Description</th><th>Mapped POs/PSOs</th><th>Level</th><th>Hours</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CO1</strong></td><td>Generate Sine, Square, Triangular and Ramp signals and display waveforms.</td><td>PO1,2,7,8,11 · PSO2</td><td>L3</td><td>6</td></tr>
+          <tr><td><strong>CO2</strong></td><td>Perform DPSK and QPSK modulation and demodulation in presence of noise.</td><td>PO1,2,7,8,11 · PSO2</td><td>L3</td><td>6</td></tr>
+          <tr><td><strong>CO3</strong></td><td>Generate random noise and plot histogram for various noise types.</td><td>PO1,2,7,8,11 · PSO2</td><td>L3</td><td>6</td></tr>
+          <tr><td><strong>CO4</strong></td><td>Perform various operations on OFDM.</td><td>PO1,2,7,8,11 · PSO2</td><td>L3</td><td>5</td></tr>
+          <tr><td><strong>CO5</strong></td><td>Demonstrate different filtering operations on signals.</td><td>PO1,2,7,8,11 · PSO2</td><td>L3</td><td>5</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>CO–PO / PSO Mapping</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>CO</th><th>PO1</th><th>PO2</th><th>PO3</th><th>PO4</th><th>PO5</th><th>PO6</th><th>PO7</th><th>PO8</th><th>PO9</th><th>PO10</th><th>PO11</th><th>PSO1</th><th>PSO2</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CO1–CO5</strong></td><td style="color:var(--amber)">3</td><td style="color:var(--amber)">2</td><td>–</td><td>–</td><td>–</td><td style="color:var(--cyan)">1</td><td style="color:var(--cyan)">1</td><td>–</td><td>–</td><td style="color:var(--cyan)">1</td><td>–</td><td>–</td><td style="color:var(--cyan)">1</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note-box"><strong>Scale:</strong> Low = 1 &nbsp;|&nbsp; Medium = 2 &nbsp;|&nbsp; High = 3</div>
+    <h3>Textbooks</h3>
+    <ol style="padding-left:20px;font-size:14.5px;line-height:2;">
+      <li>W. Y. Yang et al., <em>MATLAB/Simulink for Digital Communication</em>, A-Jin Publishing, 2009.</li>
+      <li>K. C. Raveendranathan, <em>Communication Systems Modelling and Simulation using MATLAB and Simulink</em>, 1st ed., Routledge, 2011.</li>
+    </ol>
+  </div>
+
+  <!-- EXPERIMENT LIST -->
+  <div class="section" id="experiments-list">
+    <h1 class="section-title">List of Experiments</h1>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Experiment</th><th>RBT Level</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td>Generation of signals such as Sine, Square, Triangular and Ramp.</td><td>L4</td></tr>
+          <tr><td><strong>2</strong></td><td>DPSK Transmitter and Receiver in Simulink.</td><td>L4</td></tr>
+          <tr><td><strong>3</strong></td><td>Generate a multiband signal using the Communications Toolbox.</td><td>L4</td></tr>
+          <tr><td><strong>4</strong></td><td>Random noise generation using Simulink &amp; display histogram plots of Gaussian and Uniform noise.</td><td>L4</td></tr>
+          <tr><td><strong>5</strong></td><td>Perform Equalization, Convolution, and Cyclic Prefix Addition on basic OFDM.</td><td>L4</td></tr>
+          <tr><td><strong>6</strong></td><td>QPSK Transmitter and Receiver in Simulink.</td><td>L4</td></tr>
+          <tr><td><strong>7</strong></td><td>Design and implementation of Low pass and High pass filter.</td><td>L4</td></tr>
+          <tr><td><strong>8</strong></td><td>Design and implementation of Band pass and Band reject filter.</td><td>L4</td></tr>
+          <tr><td><strong>9</strong></td><td>Obtain the scatter plots &amp; eye diagrams of a QPSK signal to visualize the signal behaviour in presence of AWGN.</td><td>L4</td></tr>
+          <tr><td><strong>10</strong></td><td>Perform OFDM modulation and demodulation.</td><td>L4</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EXAMINATION SCHEME -->
+  <div class="section" id="scheme">
+    <h1 class="section-title">Scheme of Examination</h1>
+    <h2>Continuous Internal Evaluation (CIE)</h2>
+    <p>Progressive continuous evaluation is done for laboratory work on a weekly basis during the conduct of experiments.</p>
+    <h3>Weekly Evaluation</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Activity</th><th>Max Marks</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Conduction of experiment and documentation</td><td>10</td></tr>
+          <tr><td>2</td><td>Analysis &amp; interpretation of results</td><td>5</td></tr>
+          <tr><td>3</td><td>Viva voce</td><td>5</td></tr>
+          <tr><td></td><td><strong>Total</strong></td><td><strong>20</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Lab Internal Exam</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Activity</th><th>Max Marks</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Detailed write-up with relevant procedure and calculation</td><td>5</td></tr>
+          <tr><td>2</td><td>Conduction of experiment</td><td>20</td></tr>
+          <tr><td>3</td><td>Viva voce</td><td>5</td></tr>
+          <tr><td></td><td><strong>Total</strong></td><td><strong>30</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h2>Semester End Examination (SEE)</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Activity</th><th>Marks</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Write-up</td><td>15</td></tr>
+          <tr><td>2</td><td>Conduction</td><td>70</td></tr>
+          <tr><td>3</td><td>Viva Voce</td><td>15</td></tr>
+          <tr><td></td><td><strong>Total</strong></td><td><strong>100</strong> → scaled to 50</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note-box"><strong>Note:</strong> All laboratory experiments are included for practical examination. Students pick one experiment; one change is allowed with 20% of conduction marks forfeited.</div>
+  </div>
+
+  <!-- RUBRICS -->
+  <div class="section" id="rubrics">
+    <h1 class="section-title">Evaluation Rubrics</h1>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Performance Criterion</th><th>Exceptional (3)</th><th>Satisfactory (2)</th><th>Marginal (1)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Engineering Knowledge on Communication</strong> (Wt 1)</td><td>Effectively applies principles to design Simulink model</td><td>Applies with minor errors</td><td>Does not know how to apply</td></tr>
+          <tr><td><strong>Conduction of Experiment</strong> (Wt 2)</td><td>Demonstrates conduction applying engineering knowledge</td><td>Demonstrates with minor errors</td><td>Does not exhibit ability to conduct experiment</td></tr>
+          <tr><td><strong>Apply Engineering Knowledge</strong> (Wt 1)</td><td>Effectively applies engineering knowledge to design Simulink model</td><td>Applies with minor errors</td><td>Does not know how to apply</td></tr>
+          <tr><td><strong>Calculation &amp; Results</strong> (Wt 1)</td><td>Evaluates model; obtains correct simulated output waveforms</td><td>Provides inputs to obtain output waveforms</td><td>Does not know how to apply inputs</td></tr>
+          <tr><td><strong>Viva Questions</strong> (Wt 1)</td><td>Answers using correct conceptual approach</td><td>Answers some of the viva questions</td><td>Has not answered viva questions</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- GUIDELINES -->
+  <div class="section" id="guidelines">
+    <h1 class="section-title">Lab Guidelines</h1>
+    <ul class="guide-list">
+      <li>Student assessed on participation and performance in conduction of lab on a weekly basis; average value taken as final marks.</li>
+      <li>Late comers (after 10 minutes) are not allowed into the laboratory.</li>
+      <li>Arrive prepared with experiment understanding and obtain instructor approval before powering circuits.</li>
+      <li>Tidy workspace, return equipment/components, and unplug devices after use.</li>
+      <li>Avoid mobile phones, eating, drinking, or performing unauthorized experiments.</li>
+      <li>Wear closed-toe shoes to prevent foot injuries; no sandals or open footwear.</li>
+      <li>Do not handle equipment without permission or leave powered setups unattended.</li>
+      <li>Students are required to maintain a decent dress code.</li>
+    </ul>
+  </div>
+
+  <!-- INTRO TO SIMULINK -->
+  <div class="section" id="intro-matlab">
+    <h1 class="section-title">Introduction to MATLAB Simulink</h1>
+    <div class="intro-card">
+      <p>Simulink is a software package for modelling, simulating, and analysing dynamical systems. It supports linear and nonlinear systems modelled in continuous time, sampled time, or a hybrid of the two. Systems can also be multirate — with different parts sampled or updated at different rates.</p>
+      <p>For modelling, Simulink provides a graphical user interface (GUI) for building models as block diagrams using click-and-drag mouse operations. This allows drawing models just as textbooks depict them. Simulink includes a comprehensive block library of sinks, sources, linear and nonlinear components, and connectors. Custom blocks can also be created.</p>
+      <p>Models are hierarchical — providing insight into how models are organized and how parts interact. After defining a model, it can be simulated using a choice of integration methods from Simulink menus or via MATLAB command window. Simulation results can be stored in the MATLAB workspace for post-processing and visualization.</p>
+    </div>
+    <h2>Starting Simulink</h2>
+    <ol class="steps-list">
+      <li><span class="step-n">01</span>Open MATLAB and type <code>simulink</code> in the command window, or click the Simulink icon in the toolbar.</li>
+      <li><span class="step-n">02</span>Create a new model via <code>File → New → Model</code> or by clicking <em>Blank Model</em> in the Simulink Start Page.</li>
+      <li><span class="step-n">03</span>Open the <strong>Simulink Library Browser</strong> to drag and drop blocks into the model canvas.</li>
+      <li><span class="step-n">04</span>Connect blocks by drawing lines between output and input ports, configure block parameters, and run the simulation.</li>
+    </ol>
+  </div>
+
+  <hr class="divider">
+  <h1 class="section-title" style="font-size:20px;letter-spacing:0.08em;font-family:var(--mono);border:none;padding:0;margin-bottom:36px;">
+    <span style="color:var(--amber);">▸</span> EXPERIMENTS
+  </h1>
+
+  <!-- ════════════════════════════ EXP 1 ════════════════════════════════ -->
+  <div class="exp-card" id="exp1">
+    <div class="exp-card-header">
+      <div class="exp-num-badge">01</div>
+      <div class="exp-meta">
+        <h2>Generation of Basic Signals</h2>
+        <div class="exp-aim">Aim: To generate Sine, Square, Triangular and Ramp waveforms using Simulink and observe the outputs.</div>
+      </div>
+    </div>
+    <div class="exp-card-body">
+      <span class="block-label theory">Theory</span>
+      <p><strong>Sine Wave:</strong> A continuous, periodic signal characterized by a smooth, oscillatory waveform. Fundamental in analog communication systems, serving as carriers for AM, FM, and PM.</p>
+      <p><strong>Square Wave:</strong> Features sharp transitions between high and low discrete levels. Composed of odd harmonics; used as clock signals for digital synchronization and PWM.</p>
+      <p><strong>Triangular Wave:</strong> Has linearly increasing and decreasing slopes. Used in FM synthesis and PLL circuits for frequency tracking and synchronization.</p>
+      <p><strong>Ramp Signal:</strong> Exhibits linearly increasing/decreasing amplitude over time. Used for pulse shaping and in radar systems for LFM waveform generation.</p>
+
+      <span class="block-label model">Simulink Model</span>
+      <div class="fig-box">
+        <pre>  ┌─────────────────────────────────────────────────────────────────────┐
+  │                                                                     │
+  │  Sine Wave ─────────────────────────────────────────────────────►  │
+  │                                                          ┌──────┐  │
+  │  Signal Generator ──► (Square) ────────────────────────►│Scope │  │
+  │  (Square)                                                │      │  │
+  │                                                          │  4   │  │
+  │  Signal Generator ──► (Triangular) ───────────────────►│ ch.  │  │
+  │  (Triangular)                                            │      │  │
+  │                                                          │      │  │
+  │  Ramp ──────────────────────────────────────────────────►│      │  │
+  │                                                          └──────┘  │
+  └─────────────────────────────────────────────────────────────────────┘</pre>
+        <div class="fig-caption">Fig 1a — Simulink model for four signal types; Sources library → Signal Generator, Sine Wave, Ramp, Scope</div>
+      </div>
+
+      <span class="block-label procedure">Procedure</span>
+      <ol class="steps-list">
+        <li><span class="step-n">01</span>Open Simulink. From the <strong>Sources</strong> library, drag a <strong>Sine Wave</strong> block to the canvas.</li>
+        <li><span class="step-n">02</span>Drag a <strong>Signal Generator</strong> block; set wave form to <em>Square</em>. Add another for <em>Sawtooth/Triangular</em>.</li>
+        <li><span class="step-n">03</span>Add a <strong>Ramp</strong> block from Sources.</li>
+        <li><span class="step-n">04</span>Connect all four source outputs to a single <strong>Scope</strong> (set scope to 4 channels).</li>
+        <li><span class="step-n">05</span>Configure parameters: Sine Wave — Amplitude = 1, Frequency = 1 Hz; Square — Period = 1; Triangular — Period = 1; Ramp — Slope = 1.</li>
+        <li><span class="step-n">06</span>Run the simulation and observe the four waveforms.</li>
+      </ol>
+
+      <span class="block-label output">Expected Output</span>
+      <div class="fig-box">
+        <pre>  Ramp:        /       /       /
+              /       /       /
+  ──────────────────────────────►  Time
+
+  Sine:    /\/\/\/\/\/\/\/\/\/\/\
+  ──────────────────────────────►  Time
+
+  Square:  ┌─┐ ┌─┐ ┌─┐ ┌─┐ ┌─┐
+           │ │ │ │ │ │ │ │ │ │ │
+         ──┘ └─┘ └─┘ └─┘ └─┘ └── Time
+
+  Triangle: /\ /\ /\ /\ /\ /\ /\
+           /  \/  \/  \/  \/  \
+  ──────────────────────────────►  Time</pre>
+        <div class="fig-caption">Fig 1b-e — Expected waveforms for all four signal types</div>
+      </div>
+      <div class="result-box">Simulation successfully generated Sine, Square, Triangular and Ramp waveforms. All four waveforms displayed correctly in the Scope.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════ EXP 2 ════════════════════════════════ -->
+  <div class="exp-card" id="exp2">
+    <div class="exp-card-header">
+      <div class="exp-num-badge">02</div>
+      <div class="exp-meta">
+        <h2>DPSK Transmitter and Receiver in Simulink</h2>
+        <div class="exp-aim">Aim: To generate and detect DPSK signals using Simulink.</div>
+      </div>
+    </div>
+    <div class="exp-card-body">
+      <span class="block-label theory">Theory</span>
+      <p><strong>DPSK (Differential Phase Shift Keying)</strong> encodes information in the <em>phase difference</em> between consecutive signal elements, rather than using absolute phase values. No reference signal is required at the receiver.</p>
+      <p><strong>Modulator:</strong> A differential encoder (XOR gate) encodes input data; the encoded signal is multiplied with a carrier (and its 180° inverted version) and combined to produce the DPSK signal.</p>
+      <p><strong>Demodulator:</strong> The received DPSK signal is multiplied with its one-bit delayed version, passed through an LPF and decision block to recover the original binary data.</p>
+
+      <h3>DPSK Encoding Example</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Parameter</th><th colspan="11">Sequence</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Binary Data</strong></td><td>–</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+            <tr><td><strong>Diff. Encoded</strong></td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+            <tr><td><strong>Phase of DPSK</strong></td><td>0</td><td>π</td><td>0</td><td>0</td><td>π</td><td>0</td><td>0</td><td>π</td><td>0</td><td>0</td><td>0</td></tr>
+            <tr><td><strong>Detected Binary</strong></td><td>–</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <span class="block-label model">Simulink Model</span>
+      <div class="fig-box">
+        <pre>  Z⁻¹ ──────────────────────────► XOR ──────────────────────────────►
+  Delay                            ▲     XOR Operation
+
+  Bernoulli Binary ──────────────► NOT ──► (×) Gain──────► Add ──► Scope
+  Generator            │                   Product                  ▲
+                        └───────────────────────────── (×) Product──┘
+
+  Carrier ──► (×) Product2 ──► FIR Filter ──► Relational ──► Z⁰ Delay1
+  Add1 ──────────────────────────────────────► Operator   ──► XOR Op.</pre>
+        <div class="fig-caption">Fig 2d — Simulink DPSK model with Bernoulli Generator, XOR, NOT, Gain, Carrier, FIR Filter, Relational Operator</div>
+      </div>
+
+      <span class="block-label procedure">Procedure</span>
+      <ol class="steps-list">
+        <li><span class="step-n">01</span>DPSK uses differential encoding via an XOR gate. Use <strong>Bernoulli Binary Generator</strong> for random binary input.</li>
+        <li><span class="step-n">02</span>Encoded input multiplied with carrier yields ASK for bit "1". Inverted encoded data multiplied with a 180°-shifted carrier yields ASK for bit "0".</li>
+        <li><span class="step-n">03</span>Add both product outputs to obtain the DPSK output.</li>
+        <li><span class="step-n">04</span>At decoder: DPSK + carrier → ASK; result filtered with FIR filter, compared to threshold, differentially decoded to recover original data.</li>
+        <li><span class="step-n">05</span>Observe all five signals in the Scope: Input, Encoded, Carrier, DPSK, and Recovered.</li>
+      </ol>
+
+      <span class="block-label output">Expected Output</span>
+      <p style="font-size:14px;color:var(--text-muted);">Five-row scope display (time 0–5 s): Input binary stream → Differentially encoded signal → High-frequency carrier → DPSK modulated signal with phase inversions → Recovered binary data matching input.</p>
+      <div class="result-box">DPSK Transmitter and Receiver successfully implemented. The recovered signal matches the original binary input.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════ EXP 3 ════════════════════════════════ -->
+  <div class="exp-card" id="exp3">
+    <div class="exp-card-header">
+      <div class="exp-num-badge">03</div>
+      <div class="exp-meta">
+        <h2>Multiband Signal using Communications Toolbox</h2>
+        <div class="exp-aim">Aim: To generate a multiband signal using the Communications Toolbox.</div>
+      </div>
+    </div>
+    <div class="exp-card-body">
+      <span class="block-label theory">Theory</span>
+      <p>Multi-band signals are bandlimited signals whose spectral support is restricted to several continuous intervals called <strong>bands</strong>. No information resides outside these bands. The technique enables higher data capacity by combining two or more carriers — known as <strong>carrier aggregation</strong> in 5G/LTE, or <strong>channel bonding</strong> in Wi-Fi.</p>
+      <h3>Types of Carrier Aggregation</h3>
+      <div class="fig-box">
+        <pre>  INTRA-BAND CONTIGUOUS       ▓▓▓▓▓▓▓▓▓▓▓  (one contiguous block)
+
+  INTRA-BAND NON-CONTIGUOUS  ▓▓▓▓    ▓▓▓▓  (two gaps within same band)
+
+  INTER-BAND NON-CONTIGUOUS  ▓▓▓▓ . . . . ▓▓▓▓  (across different bands)</pre>
+        <div class="fig-caption">Fig 3a — Three types of carrier aggregation in modern wireless systems</div>
+      </div>
+
+      <span class="block-label procedure">Procedure</span>
+      <ol class="steps-list">
+        <li><span class="step-n">01</span>Connect: <strong>Random Integer Generator</strong> → <strong>QPSK Modulator</strong> → <strong>Upsampler ×2</strong></li>
+        <li><span class="step-n">02</span>Connect: <strong>Bernoulli Binary Generator</strong> → <strong>GMSK Modulator</strong> → <strong>Upsampler ×2</strong></li>
+        <li><span class="step-n">03</span>Feed both upsampled outputs into the <strong>Multiband Combiner</strong> block.</li>
+        <li><span class="step-n">04</span>Connect Multiband Combiner output to <strong>Spectrum Analyzer</strong>.</li>
+        <li><span class="step-n">05</span>Settings: Random Integer set size = 4; QPSK phase offset = π/4, input type = integer; GMSK input type = bit, phase offset = 0, pulse length = 4, samples/symbol = 2.</li>
+        <li><span class="step-n">06</span>Run simulation and observe combined spectrum (QPSK, GMSK, and combined signals) in Spectrum Analyzer.</li>
+      </ol>
+      <span class="block-label output">Expected Output</span>
+      <p style="font-size:14px;color:var(--text-muted);">Spectrum Analyzer shows three overlapping spectra: QPSK signal concentrated near 0 kHz, GMSK signal spread over wider bandwidth. RBW = 234.375 Hz, Sample rate = 240 kHz. X-axis: –100 to +100 kHz; Y-axis: –120 to +20 dBm.</p>
+      <div class="result-box">Multiband signal successfully generated and visualized in Spectrum Analyzer with QPSK and GMSK components identified.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════ EXP 4 ════════════════════════════════ -->
+  <div class="exp-card" id="exp4">
+    <div class="exp-card-header">
+      <div class="exp-num-badge">04</div>
+      <div class="exp-meta">
+        <h2>Random Noise Generation &amp; Histogram Plots</h2>
+        <div class="exp-aim">Aim: To generate Random noise using Simulink and display histogram plots of Gaussian and Uniform noise.</div>
+      </div>
+    </div>
+    <div class="exp-card-body">
+      <span class="block-label theory">Theory</span>
+      <p>Noise in communication systems can be modelled using MATLAB Function blocks with random number generators. This experiment generates Gaussian (normal) and Uniform random noise and plots their histograms to visualize their statistical distributions.</p>
+      <h3>MATLAB Functions</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Noise Type</th><th>MATLAB Function</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Gaussian</strong></td><td><code>y = wgn(spf, 1, p)</code></td></tr>
+            <tr><td><strong>Rayleigh</strong></td><td><code>y = abs(alpha * (randn(spf,1) + 1i*randn(spf,1)))</code></td></tr>
+            <tr><td><strong>Rician</strong></td><td><code>y = sqrt((s²*randn(spf,1)+m1)² + (s²*randn(spf,1)+m2)²)</code></td></tr>
+            <tr><td><strong>Uniform</strong></td><td><code>y = lb + (ub - lb) * rand(spf, 1)</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <span class="block-label procedure">Procedure</span>
+      <ol class="steps-list">
+        <li><span class="step-n">01</span>Connect <strong>Gaussian Noise Source</strong> → <strong>Histogram1</strong> → <strong>Array Plot</strong></li>
+        <li><span class="step-n">02</span>Connect <strong>Uniform Noise Source</strong> → <strong>Histogram2</strong> → <strong>Array Plot</strong></li>
+        <li><span class="step-n">03</span>Gaussian: source type = Gaussian, mean = 0, variance = 1</li>
+        <li><span class="step-n">04</span>Uniform: source type = Uniform, mean = 0, variance = 1</li>
+        <li><span class="step-n">05</span>Histogram settings: lower limit = –5, upper limit = +5, number of bins = 50, mode = "each column"</li>
+        <li><span class="step-n">06</span>Run simulation and observe histogram shapes in Array Plots.</li>
+      </ol>
+
+      <span class="block-label output">Expected Output</span>
+      <div class="fig-box">
+        <pre>  Gaussian Histogram:        Uniform Histogram:
+
+  0.08 │    ●●               0.21 │    ████
+  0.06 │  ●●●●●●             0.15 │    ████
+  0.04 │●●●●●●●●●●           0.09 │    ████
+  0.02 │●●●●●●●●●●●●●●       0.03 │    ████
+       └──────────────              └──────────────
+          Bin (0–48)                  Bin (0–48)
+
+   Bell-curve (symmetric)        Flat-top (rectangular)</pre>
+        <div class="fig-caption">Fig 4c–4d — Gaussian (bell-shaped) vs Uniform (flat-top) noise histograms</div>
+      </div>
+      <div class="result-box">Gaussian noise produces a bell-shaped histogram; Uniform noise produces a flat-top (rectangular) histogram, confirming their statistical distributions.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════ EXP 5 ════════════════════════════════ -->
+  <div class="exp-card" id="exp5">
+    <div class="exp-card-header">
+      <div class="exp-num-badge">05</div>
+      <div class="exp-meta">
+        <h2>Equalization, Convolution &amp; Cyclic Prefix on OFDM</h2>
+        <div class="exp-aim">Aim: To perform equalization, convolution and cyclic prefix addition on basic OFDM using MATLAB.</div>
+      </div>
+    </div>
+    <div class="exp-card-body">
+      <span class="block-label theory">Theory</span>
+      <p><strong>Equalization</strong> reverses distortion incurred by a signal transmitted through a channel, rendering the frequency response flat end-to-end. Used in telephone lines, DSL, and television cables.</p>
+      <p><strong>Convolution</strong> is the primary technique in DSP — it mathematically combines two signals using the impulse response to describe system behaviour.</p>
+      <p><strong>Cyclic Prefix (CP)</strong> is a copy of the end of an OFDM symbol prepended to its beginning. CP length ≥ maximum channel delay spread. It creates a circular convolution that simplifies equalization to a single one-tap frequency-domain equalizer per subcarrier.</p>
+      <h3>Advantages &amp; Disadvantages of CP</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div class="vm-card" style="border-left-color:var(--green)">
+          <h3 style="color:var(--green)">Advantages</h3>
+          <ul><li>One-tap equalizer per subcarrier</li><li>Preserves subcarrier orthogonality; eliminates ISI</li><li>Simple and efficient channel estimation</li><li>Flexible subcarrier allocation</li></ul>
+        </div>
+        <div class="vm-card" style="border-left-color:var(--red)">
+          <h3 style="color:var(--red)">Disadvantages</h3>
+          <ul><li>Reduces spectral efficiency and data rate (overhead)</li><li>Increases PAPR</li><li>Requires precise synchronization</li></ul>
+        </div>
+      </div>
+
+      <span class="block-label procedure">MATLAB Code</span>
+      <pre><span class="kw">clc</span>; <span class="kw">clear</span>; <span class="kw">close</span> all;
+
+u1 = 1:8;
+h  = [0.4 1 0.4];   <span class="cm">% Channel impulse response</span>
+
+<span class="kw">figure</span>
+<span class="fn">subplot</span>(2,1,1); <span class="fn">stem</span>(u1);  <span class="fn">title</span>(<span class="str">"Input signal"</span>)
+<span class="fn">subplot</span>(2,1,2); <span class="fn">stem</span>(h,'^'); <span class="fn">title</span>(<span class="str">"Channel impulse response"</span>)
+
+N   = length(u1);
+yl1 = <span class="fn">conv</span>(u1, h);          <span class="cm">% Linear convolution</span>
+yc1 = <span class="fn">cconv</span>(u1, h, N);      <span class="cm">% Circular convolution</span>
+
+L   = length(h);
+ucp = u1(N-L+1:N);           <span class="cm">% Last samples as Cyclic Prefix</span>
+u2  = [ucp u1];               <span class="cm">% Prepend CP to input</span>
+yl2 = <span class="fn">conv</span>(u2, h);
+yl2 = yl2(L+1:end);          <span class="cm">% Remove CP</span>
+
+<span class="kw">if</span> max(yc1 - yl2(1:N)) &lt; 1e-8
+    <span class="fn">disp</span>(<span class="str">"Linear and circular convolution sequences match."</span>)
+<span class="kw">end</span></pre>
+      <div class="result-box">With Cyclic Prefix added, linear and circular convolution sequences match — confirming correct OFDM CP implementation.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════ EXP 6 ════════════════════════════════ -->
+  <div class="exp-card" id="exp6">
+    <div class="exp-card-header">
+      <div class="exp-num-badge">06</div>
+      <div class="exp-meta">
+        <h2>QPSK Transmitter and Receiver in Simulink</h2>
+        <div class="exp-aim">Aim: To design a QPSK Transmitter and Receiver by creating a Simulink Model.</div>
+      </div>
+    </div>
+    <div class="exp-card-body">
+      <span class="block-label theory">Theory</span>
+      <p><strong>QPSK (Quadrature Phase Shift Keying)</strong> is a DSBSC modulation scheme that transmits <strong>2 bits per symbol (dibits)</strong>. Four constellation points are placed at 45°, 135°, 225°, 315°. It doubles spectral efficiency compared to BPSK without increasing bandwidth.</p>
+      <div class="fig-box">
+        <pre>  QPSK Constellation:
+  
+            Q
+            │   × (01)    × (11)
+            │
+  ──────────┼────────────── I
+            │
+            │   × (00)    × (10)</pre>
+        <div class="fig-caption">Fig 6b — QPSK constellation; each point encodes 2 bits</div>
+      </div>
+
+      <span class="block-label model">Simulink Chain</span>
+      <p style="font-size:14px;">Random Integer Generator → QPSK Modulator Baseband → AWGN Channel → QPSK Demodulator Baseband → Scope</p>
+
+      <span class="block-label procedure">Procedure</span>
+      <ol class="steps-list">
+        <li><span class="step-n">01</span>Build the transmitter: <strong>Random Integer Generator</strong> feeds <strong>QPSK Modulator Baseband</strong>.</li>
+        <li><span class="step-n">02</span>Pass modulated signal through <strong>AWGN Channel</strong> to simulate noise.</li>
+        <li><span class="step-n">03</span>Feed noisy signal into <strong>QPSK Demodulator Baseband</strong>.</li>
+        <li><span class="step-n">04</span>Add sine wave function blocks for complex signal reconstruction.</li>
+        <li><span class="step-n">05</span>Connect both Scope1 (modulator output) and Scope (demodulator output) for observation.</li>
+        <li><span class="step-n">06</span>Run the simulation and compare input vs recovered signals.</li>
+      </ol>
+
+      <span class="block-label output">Expected Output</span>
+      <p style="font-size:14px;color:var(--text-muted);">Scope1: Row 1 — discrete input pulses (amplitude 0–3); Row 2 — dense QPSK RF waveform (amplitude ±1). Scope: Row 1 — recovered signal matching input; Row 2 — recovered signal with minor noise artifacts.</p>
+      <div class="result-box">QPSK Transmitter and Receiver successfully implemented. The demodulator accurately recovers the transmitted digital signal.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════ EXP 7 ════════════════════════════════ -->
+  <div class="exp-card" id="exp7">
+    <div class="exp-card-header">
+      <div class="exp-num-badge">07</div>
+      <div class="exp-meta">
+        <h2>Low Pass and High Pass Filter</h2>
+        <div class="exp-aim">Aim: To design and implement Low Pass and High Pass Butterworth filters in Simulink.</div>
+      </div>
+    </div>
+    <div class="exp-card-body">
+      <span class="block-label theory">Theory</span>
+      <p><strong>Low Pass Filter (LPF):</strong> Passes frequencies below the cutoff frequency; attenuates higher frequencies. Used for signal smoothing in audio, image processing, and biomedical systems.</p>
+      <p><strong>High Pass Filter (HPF):</strong> Passes frequencies above the cutoff frequency; attenuates lower frequencies. Used for signal sharpening and edge detection.</p>
+      <div class="fig-box">
+        <pre>     LPF Response                  HPF Response
+
+  V_o/V_i                       V_o/V_i
+    ▲                              ▲
+    │████████                      │
+    │        ██                    │           ████████
+    │          ████                │          █
+    └────────────► f               └────────────► f
+          f_OH                          f_OL
+
+  (attenuates above cutoff)     (attenuates below cutoff)</pre>
+        <div class="fig-caption">Fig 7a-b — Ideal frequency responses of LPF and HPF</div>
+      </div>
+
+      <span class="block-label procedure">Procedure</span>
+      <ol class="steps-list">
+        <li><span class="step-n">01</span>Combine Sine Wave generator and noise (Signal Generator) using an <strong>Add</strong> block to produce a noisy sinusoidal signal.</li>
+        <li><span class="step-n">02</span>Design <strong>Butterworth LPF</strong>: order = 8, cutoff = 30 rad/s.</li>
+        <li><span class="step-n">03</span>Design <strong>Butterworth HPF</strong>: order = 8, cutoff = 10 rad/s.</li>
+        <li><span class="step-n">04</span>Connect noisy signal to both filters, then observe all four waveforms (2 inputs + 2 filtered outputs) in the Scope.</li>
+      </ol>
+      <div class="result-box">LPF successfully removed high-frequency noise, preserving the sine wave. HPF removed the low-frequency sine component, passing only high-frequency noise.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════ EXP 8 ════════════════════════════════ -->
+  <div class="exp-card" id="exp8">
+    <div class="exp-card-header">
+      <div class="exp-num-badge">08</div>
+      <div class="exp-meta">
+        <h2>Band Pass and Band Reject Filter</h2>
+        <div class="exp-aim">Aim: To design and implement Band Pass and Band Reject filters in Simulink.</div>
+      </div>
+    </div>
+    <div class="exp-card-body">
+      <span class="block-label theory">Theory</span>
+      <p><strong>Band Pass Filter (BPF):</strong> Combination of HPF and LPF; allows only frequencies in a selected range (f_cL to f_cH) to pass. Used in audio processing, wireless communication, EEG/ECG.</p>
+      <p><strong>Band Stop Filter (BSF / Notch Filter):</strong> Blocks only a selected frequency range; passes all others. Used in noise cancellation and power line interference suppression (50/60 Hz removal).</p>
+      <div class="fig-box">
+        <pre>   Band Pass                    Band Reject (Notch)
+
+     ▲                             ▲
+     │      ████                   │████           ████
+     │     █    █                  │    █         █
+     │    █      █                 │     ███████
+     └─────────────► F             └──────────────── F
+       f_cL  f_cH                    f_cL  f_cH</pre>
+        <div class="fig-caption">Fig 8a-b — Frequency responses of Band Pass and Band Reject filters</div>
+      </div>
+
+      <span class="block-label procedure">Procedure</span>
+      <ol class="steps-list">
+        <li><span class="step-n">01</span>Combine Sine Wave + noise with an <strong>Add</strong> block.</li>
+        <li><span class="step-n">02</span><strong>BPF design:</strong> HPF passband = 30 Hz; LPF passband = 40 Hz; passband attenuation = 1 dB; stopband attenuation = 80 dB; sampling rate = 256 sps.</li>
+        <li><span class="step-n">03</span><strong>BSF design:</strong> LPF stopband = 25–35 Hz; HPF passband = 50 Hz; passband ripple = 1 dB; stopband ripple = 60 dB.</li>
+        <li><span class="step-n">04</span>Connect noisy input to both BPF and BSF in parallel; observe 5-panel scope output.</li>
+      </ol>
+      <div class="result-box">BPF preserved the sinusoidal component within the passband. BSF removed the sine component while passing noise frequencies outside the stop band.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════ EXP 9 ════════════════════════════════ -->
+  <div class="exp-card" id="exp9">
+    <div class="exp-card-header">
+      <div class="exp-num-badge">09</div>
+      <div class="exp-meta">
+        <h2>Scatter Plots &amp; Eye Diagrams of QPSK with AWGN</h2>
+        <div class="exp-aim">Aim: To obtain scatter plots and eye diagrams of a QPSK signal in the presence of AWGN.</div>
+      </div>
+    </div>
+    <div class="exp-card-body">
+      <span class="block-label theory">Theory</span>
+      <p><strong>Scatter Plot (Constellation Diagram):</strong> Shows received signal points in the I-Q plane; reveals modulation quality and noise effects. Ideal QPSK has 4 points at ±0.707, ±0.707. Noise causes points to "spread" around their ideal locations.</p>
+      <p><strong>Eye Diagram:</strong> Overlays multiple segments of a received waveform to assess signal integrity. A wide-open eye indicates low noise; a closed eye indicates severe degradation.</p>
+      <p><strong>AWGN:</strong> Additive White Gaussian Noise — constant power spectral density across all frequencies with Gaussian amplitude distribution. Introduces random phase and amplitude distortion in QPSK.</p>
+
+      <span class="block-label procedure">Procedure</span>
+      <ol class="steps-list">
+        <li><span class="step-n">01</span>Build chain: Random Integer → QPSK Modulator Baseband → (Eye Diagram before noise) → AWGN → (Eye Diagram after noise) → QPSK Demodulator → Scope + Constellation Diagram.</li>
+        <li><span class="step-n">02</span>Random Integer: set size = 4, sample time = 0.001, samples per frame = 1.</li>
+        <li><span class="step-n">03</span>QPSK: phase offset = π/4, constellation ordering = Grey, input type = integer.</li>
+        <li><span class="step-n">04</span>AWGN: input seed = 67, SNR = 10 dB.</li>
+        <li><span class="step-n">05</span>Compare eye diagrams with and without noise; observe constellation scatter.</li>
+      </ol>
+
+      <span class="block-label output">Expected Output</span>
+      <div class="fig-box">
+        <pre>  Eye Diagram WITHOUT noise:    Eye Diagram WITH AWGN (SNR=10dB):
+
+    Clean, wide eye opening        Partially closed eye
+    ─────/\────/\────             Multiple noisy trajectories
+         │    │                   Eye opening reduced
+
+  Constellation WITHOUT noise:  Constellation WITH AWGN:
+    4 precise points at           4 point-clouds with spread
+    45°, 135°, 225°, 315°         proportional to noise level</pre>
+        <div class="fig-caption">Fig 9b-e — Eye diagram and constellation: clean vs noisy QPSK signal</div>
+      </div>
+      <div class="result-box">Eye diagrams and scatter plots successfully obtained. AWGN causes visible degradation — eye partially closes and constellation points spread into clouds.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════ EXP 10 ═══════════════════════════════ -->
+  <div class="exp-card" id="exp10">
+    <div class="exp-card-header">
+      <div class="exp-num-badge">10</div>
+      <div class="exp-meta">
+        <h2>OFDM Modulation and Demodulation</h2>
+        <div class="exp-aim">Aim: To perform OFDM Modulation and Demodulation in Simulink and calculate BER.</div>
+      </div>
+    </div>
+    <div class="exp-card-body">
+      <span class="block-label theory">Theory</span>
+      <p><strong>OFDM (Orthogonal Frequency Division Multiplexing)</strong> divides a high-rate data stream into multiple parallel lower-rate subcarriers, each modulated at an orthogonal frequency. This combats multipath fading and ISI — used in Wi-Fi (802.11a/g/n/ac/ax), LTE, 5G, DVB-T, and ADSL.</p>
+      <div class="fig-box">
+        <pre>  OFDM Chain:
+
+  Bit stream → PSK/QAM Mapper → S/P Convert → IFFT → Add CP → P/S → Tx
+
+  Rx → S/P → Remove CP → FFT → Equalize → P/S → PSK/QAM Demapper → Bits
+
+  IFFT: maps frequency-domain symbols to time-domain OFDM symbol
+  FFT:  recovers frequency-domain data at receiver</pre>
+        <div class="fig-caption">Fig 10a — OFDM transmit and receive chain</div>
+      </div>
+
+      <span class="block-label procedure">Procedure</span>
+      <ol class="steps-list">
+        <li><span class="step-n">01</span>Build chain: Bernoulli Binary → QPSK Modulator → IFFT → noise addition → FFT → QPSK Demodulator.</li>
+        <li><span class="step-n">02</span>Bernoulli Binary: initial seed = 61, sample time = <code>stime</code>, samples/frame = 200, output = double.</li>
+        <li><span class="step-n">03</span>QPSK: input type = bit, M array number = <code>M</code>, phase offset = π/M.</li>
+        <li><span class="step-n">04</span>FFT and IFFT: implementation mode = <strong>Auto</strong>.</li>
+        <li><span class="step-n">05</span>Connect <strong>Error Rate Calculation</strong> block between transmitted and received data to measure BER.</li>
+        <li><span class="step-n">06</span>Observe constellation diagrams at IFFT and FFT outputs; observe OFDM vs received signals in Scope.</li>
+      </ol>
+
+      <span class="block-label output">Expected Output</span>
+      <p style="font-size:14px;color:var(--text-muted);">Four outputs: IFFT Constellation (4-point cluster), FFT Constellation (spread points near origin due to noise), BER display (~0.41 under high noise), and dual-waveform Scope showing OFDM vs received signal amplitude.</p>
+      <div class="result-box">OFDM modulation and demodulation successfully performed. BER calculated and constellation diagrams obtained, demonstrating the effect of noise on OFDM subcarriers.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════ VIVA Q&A ═════════════════════════════ -->
+  <div class="section" id="viva">
+    <h1 class="section-title">Viva Questions</h1>
+
+    <div class="viva-section">
+      <div class="viva-exp-title">EXP 01 — Generation of Basic Signals</div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q01</span><span class="q-text">What is Simulink, and how is it different from MATLAB?</span><span class="q-arrow">▶</span></div><div class="qa-a">Simulink is a graphical programming environment within MATLAB for modeling, simulating, and analyzing dynamic systems. Unlike MATLAB which is text-based, Simulink uses block diagrams for system representation, allowing drag-and-drop model construction.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q02</span><span class="q-text">What types of basic signals can be generated in Simulink?</span><span class="q-arrow">▶</span></div><div class="qa-a">The basic signals include: Sine Wave, Square Wave, Sawtooth Wave, Step Signal, Pulse Signal, and Ramp Signal — all available from the Sources library.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q03</span><span class="q-text">What is a sine wave and where is it used?</span><span class="q-arrow">▶</span></div><div class="qa-a">Sine waves are continuous, periodic signals with smooth oscillatory waveforms. Used as carriers in AM, FM and PM communication systems; also in AC power supply, signal processing (Fourier analysis), and medical imaging (ultrasound, MRI).</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q04</span><span class="q-text">What parameters can be configured in the Sine Wave block?</span><span class="q-arrow">▶</span></div><div class="qa-a">Amplitude, Frequency (Hz), Phase (radians), and Sample time.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q05</span><span class="q-text">What are the applications of the ramp signal?</span><span class="q-arrow">▶</span></div><div class="qa-a">Ramp signals are used in control systems for stability analysis, oscilloscope sweep control, motion control (uniform acceleration), radar LFM waveform generation, and image processing (edge detection).</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q06</span><span class="q-text">What is a square wave and what are its applications?</span><span class="q-arrow">▶</span></div><div class="qa-a">Square waves have sharp transitions between high/low levels, composed of odd harmonics. Used as digital clock signals, in PWM for motor speed/LED control, and for testing digital circuits.</div></div>
+    </div>
+
+    <div class="viva-section">
+      <div class="viva-exp-title">EXP 02 — DPSK</div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q01</span><span class="q-text">What is DPSK?</span><span class="q-arrow">▶</span></div><div class="qa-a">DPSK (Differential Phase Shift Keying) encodes information in the phase difference between consecutive signal elements, eliminating the need for a reference carrier at the receiver.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q02</span><span class="q-text">How does DPSK differ from PSK?</span><span class="q-arrow">▶</span></div><div class="qa-a">PSK uses absolute phase values to encode data; DPSK uses relative phase differences between successive symbols, allowing non-coherent detection without a reference carrier.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q03</span><span class="q-text">What is the main disadvantage of DPSK?</span><span class="q-arrow">▶</span></div><div class="qa-a">Higher BER compared to coherent PSK. Also, errors in one bit can propagate to the next bit due to the differential encoding scheme.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q04</span><span class="q-text">What happens if the delay block is removed in DPSK demodulation?</span><span class="q-arrow">▶</span></div><div class="qa-a">The receiver cannot compare phase differences between consecutive symbols, leading to incorrect demodulation and high bit error rates.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q05</span><span class="q-text">What are practical applications of DPSK?</span><span class="q-arrow">▶</span></div><div class="qa-a">Wireless communication (Wi-Fi, Bluetooth), satellite and optical communication, RFID systems, and powerline communication.</div></div>
+    </div>
+
+    <div class="viva-section">
+      <div class="viva-exp-title">EXP 04 — Noise &amp; Histograms</div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q01</span><span class="q-text">What is Gaussian noise and what are its characteristics?</span><span class="q-arrow">▶</span></div><div class="qa-a">Gaussian noise has amplitudes following a normal (bell-curve) distribution with mean=0 and a specified variance. Its histogram is symmetric and bell-shaped, representing the most common noise type in electronic systems.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q02</span><span class="q-text">What is Uniform noise and how does its histogram differ from Gaussian?</span><span class="q-arrow">▶</span></div><div class="qa-a">Uniform noise has equal probability for all amplitude values within a specified range. Its histogram is flat-top (rectangular), unlike the bell-shaped Gaussian histogram.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q03</span><span class="q-text">What does AWGN stand for and what does it mean?</span><span class="q-arrow">▶</span></div><div class="qa-a">Additive White Gaussian Noise — "additive" because it adds to the signal, "white" because it has constant power spectral density across all frequencies, and "Gaussian" because amplitude values follow a normal distribution.</div></div>
+    </div>
+
+    <div class="viva-section">
+      <div class="viva-exp-title">EXP 05 — OFDM Basics</div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q01</span><span class="q-text">What is the purpose of the Cyclic Prefix in OFDM?</span><span class="q-arrow">▶</span></div><div class="qa-a">The Cyclic Prefix acts as a guard interval to absorb ISI from multipath propagation. It converts linear convolution with the channel into circular convolution, enabling simple one-tap equalization per subcarrier in the frequency domain.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q02</span><span class="q-text">What happens if the Cyclic Prefix is too short?</span><span class="q-arrow">▶</span></div><div class="qa-a">If CP length is less than the channel delay spread, it cannot fully absorb the ISI, causing signal distortion and degraded system performance (increased BER).</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q03</span><span class="q-text">What is the difference between linear and circular convolution?</span><span class="q-arrow">▶</span></div><div class="qa-a">Linear convolution of sequences of length N and M produces an output of length N+M-1. Circular convolution produces an output of length N (same as input). With CP added to make it match length N, linear convolution result equals the circular convolution result.</div></div>
+    </div>
+
+    <div class="viva-section">
+      <div class="viva-exp-title">EXP 06 — QPSK</div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q01</span><span class="q-text">What is QPSK and how does it differ from BPSK?</span><span class="q-arrow">▶</span></div><div class="qa-a">QPSK (Quadrature PSK) transmits 2 bits per symbol using 4 phase states (45°, 135°, 225°, 315°). BPSK transmits 1 bit per symbol using 2 phases. QPSK doubles spectral efficiency without increasing bandwidth requirement.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q02</span><span class="q-text">What is Grey coding in QPSK?</span><span class="q-arrow">▶</span></div><div class="qa-a">Grey coding maps dibits to constellation points such that adjacent points differ by only one bit. This minimizes bit errors when a received symbol is mistaken for a neighboring symbol — only 1 bit error occurs instead of 2.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q03</span><span class="q-text">What is the role of AWGN in the QPSK Simulink model?</span><span class="q-arrow">▶</span></div><div class="qa-a">The AWGN Channel block simulates realistic channel conditions by adding Gaussian noise to the modulated signal. The SNR parameter controls noise level; lower SNR causes higher BER and more spread in the constellation diagram.</div></div>
+    </div>
+
+    <div class="viva-section">
+      <div class="viva-exp-title">EXP 07 &amp; 08 — Filters</div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q01</span><span class="q-text">What is the significance of cutoff frequency in a filter?</span><span class="q-arrow">▶</span></div><div class="qa-a">The cutoff frequency defines the boundary between passband and stopband. At the cutoff frequency, the output power is reduced by half (–3 dB) relative to the passband level.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q02</span><span class="q-text">What are the advantages of Butterworth filters?</span><span class="q-arrow">▶</span></div><div class="qa-a">Butterworth filters have a maximally flat response in the passband (no ripple), smooth roll-off in the transition band, and are relatively simple to design. They are the most common choice for general-purpose filtering.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q03</span><span class="q-text">How does filter order affect performance?</span><span class="q-arrow">▶</span></div><div class="qa-a">Higher order → steeper roll-off, sharper transition between passband and stopband, more complex implementation. Lower order → gradual roll-off, simpler design but poorer frequency selectivity.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q04</span><span class="q-text">How is a band-pass filter designed from simpler filters?</span><span class="q-arrow">▶</span></div><div class="qa-a">Combine an HPF and LPF in series such that the HPF cutoff frequency is lower than the LPF cutoff frequency. The overlap defines the passband (f_cL to f_cH).</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q05</span><span class="q-text">What are the applications of band-pass and band-reject filters?</span><span class="q-arrow">▶</span></div><div class="qa-a">Band-pass: audio processing, wireless communication, biomedical (EEG, ECG). Band-reject: noise cancellation, power line interference suppression (removing 50/60 Hz hum), radio communication.</div></div>
+    </div>
+
+    <div class="viva-section">
+      <div class="viva-exp-title">EXP 09 — Eye Diagrams &amp; Scatter Plots</div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q01</span><span class="q-text">What is an eye diagram and how is it interpreted?</span><span class="q-arrow">▶</span></div><div class="qa-a">An eye diagram overlays many segments of a received waveform. The "eye opening" indicates signal quality — a wide eye means good SNR and clear timing margins; a closed or narrow eye indicates high noise, ISI, or timing jitter.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q02</span><span class="q-text">How does SNR impact scatter plot and eye diagram?</span><span class="q-arrow">▶</span></div><div class="qa-a">Higher SNR → well-defined constellation points, widely open eye. Lower SNR → constellation points spread into clouds, eye opening closes. At very low SNR, the eye may close completely indicating unreliable detection.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q03</span><span class="q-text">What is Symbol Error Rate (SER) in QPSK?</span><span class="q-arrow">▶</span></div><div class="qa-a">SER is the probability of incorrect symbol detection; it increases as the noise level increases (lower SNR). For QPSK, each symbol carries 2 bits, so SER is related but not equal to BER.</div></div>
+    </div>
+
+    <div class="viva-section">
+      <div class="viva-exp-title">EXP 10 — OFDM Modulation &amp; Demodulation</div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q01</span><span class="q-text">What is OFDM and why is it used?</span><span class="q-arrow">▶</span></div><div class="qa-a">OFDM (Orthogonal Frequency Division Multiplexing) divides a data stream into multiple parallel subcarriers, each modulated at a lower rate. It improves spectral efficiency, reduces ISI, and provides robustness against multipath fading. Used in Wi-Fi, LTE, 5G, DVB-T, and ADSL.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q02</span><span class="q-text">What is orthogonality in OFDM?</span><span class="q-arrow">▶</span></div><div class="qa-a">Orthogonality ensures that subcarriers do not interfere with each other at sampling instants, even though their spectra overlap. This allows efficient bandwidth utilization without Inter-Carrier Interference (ICI).</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q03</span><span class="q-text">What is the role of IFFT and FFT in OFDM?</span><span class="q-arrow">▶</span></div><div class="qa-a">IFFT (at transmitter) converts frequency-domain subcarrier symbols into a time-domain OFDM symbol for transmission. FFT (at receiver) transforms the received time-domain signal back to the frequency domain for decoding each subcarrier.</div></div>
+      <div class="qa-item"><div class="qa-q"><span class="q-num">Q04</span><span class="q-text">Key applications of OFDM?</span><span class="q-arrow">▶</span></div><div class="qa-a">Wi-Fi (802.11a/g/n/ac/ax), LTE and 5G cellular, DVB-T digital television, ADSL/VDSL broadband, and underwater acoustic communications.</div></div>
+    </div>
+  </div>
+
+  <!-- VISION & MISSION -->
+  <div class="section" id="vision">
+    <h1 class="section-title">Vision &amp; Mission</h1>
+    <h2>Institute</h2>
+    <div class="vm-card">
+      <h3>Vision</h3>
+      <p>Become a premier institution imparting quality education in engineering and management to meet the changing needs of society.</p>
+    </div>
+    <div class="vm-card">
+      <h3>Mission</h3>
+      <ul>
+        <li><strong>M1.</strong> Create environment conducive for continuous learning through quality teaching–learning processes supported by modern infrastructure.</li>
+        <li><strong>M2.</strong> Promote Research and Innovation through collaboration with industries.</li>
+        <li><strong>M3.</strong> Inculcate ethical values and environmental consciousness through holistic education programs.</li>
+      </ul>
+    </div>
+    <h2>Department</h2>
+    <div class="vm-card">
+      <h3>Vision</h3>
+      <p>To provide quality technical education in Electronics and Communication Engineering focusing on global challenges and societal needs.</p>
+    </div>
+    <div class="vm-card">
+      <h3>Mission</h3>
+      <ul>
+        <li><strong>M1.</strong> Comprehensive outcome-based education in ECE through good teaching–learning practices with strong industry–institute interaction.</li>
+        <li><strong>M2.</strong> Create state-of-the-art infrastructure enabling system and subsystem level development in hardware and software.</li>
+        <li><strong>M3.</strong> Prepare students for development, research, and innovation in emerging ECE areas to become innovators, entrepreneurs and leaders.</li>
+        <li><strong>M4.</strong> Imbibe professional ethics and social values with concern for environment.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    COMMUNICATION SIMULINK TOOLBOX LABORATORY &nbsp;·&nbsp; ECE23607A<br>
+    DEPT. OF ELECTRONICS &amp; COMMUNICATION ENGINEERING<br>
+    GLOBAL ACADEMY OF TECHNOLOGY, BENGALURU – 560 098<br>
+    AFFILIATED TO VISVESVARAYA TECHNOLOGICAL UNIVERSITY, BELAGAVI
+  </footer>
+</main>
+
+<script>
+  // Collapsible Q&A
+  document.querySelectorAll('.qa-q').forEach(function(q) {
+    q.addEventListener('click', function() {
+      var item = this.closest('.qa-item');
+      item.classList.toggle('open');
+    });
+  });
+</script>
+</body>
+</html>
